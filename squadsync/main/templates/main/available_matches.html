@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Available Matches</title>
+
+    <style>
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #eef4ff;
+            margin: 0;
+            padding: 40px;
+        }
+
+        /* Home Icon */
+        .home-icon {
+            position: absolute;
+            top: 20px;
+            left: 30px;
+        }
+
+        .home-icon a {
+            font-size: 30px;
+            text-decoration: none;
+            color: #004fc5;
+            font-weight: bold;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #004fc5;
+            margin-bottom: 30px;
+        }
+
+        .match-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            background: white;
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 25px;
+            border: 1px solid #cddcff;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            transition: 0.3s;
+        }
+
+        .match-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .left {
+            width: 60%;
+        }
+
+        .right {
+            width: 35%;
+            text-align: right;
+        }
+
+        .match-img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 1px solid #dce7ff;
+        }
+
+        .title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #003b99;
+            margin-bottom: 10px;
+        }
+
+        .info {
+            margin: 6px 0;
+            color: #333;
+        }
+
+        .contact {
+            margin-top: 10px;
+            font-weight: bold;
+            color: #222;
+        }
+
+        .chat-btn {
+            background: #0066ff;
+            color: white;
+            padding: 8px 14px;
+            border-radius: 8px;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 12px;
+        }
+
+        .chat-btn:hover {
+            background: #004bb5;
+        }
+        .home-icon {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    font-size: 28px;
+    color: #003b80;
+    text-decoration: none;
+    background: white;
+    padding: 10px 12px;
+    border-radius: 50%;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transition: 0.3s;
+    z-index: 1000;
+}
+
+.home-icon:hover {
+    background: #003b80;
+    color: white;
+    transform: scale(1.1);
+}
+
+    </style>
+</head>
+
+<body>
+
+<!-- HOME BUTTON -->
+<div class="home-icon">
+    <a href="/dashboard/">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="#0066ff">
+            <path d="M12 3l10 9h-3v9h-6v-6H11v6H5v-9H2z"/>
+        </svg>
+    </a>
+
+</div>
+
+<div class="container">
+
+    <h2>Available Matches</h2>
+
+    {% for match in matches %}
+        <div class="match-card">
+
+            <!-- LEFT SIDE DETAILS -->
+            <div class="left">
+                <div class="title">{{ match.title }}</div>
+
+                <div class="info"><strong>Sport:</strong> {{ match.sport }}</div>
+                <div class="info"><strong>Date:</strong> {{ match.date }}</div>
+                <div class="info"><strong>Time:</strong> {{ match.time }}</div>
+                <div class="info"><strong>Location:</strong> {{ match.location }}</div>
+                <div class="info"><strong>Players Needed:</strong> {{ match.players_needed }}</div>
+
+                {% if match.cash_prize %}
+                    <div class="info"><strong>Cash Prize:</strong> ₹{{ match.cash_prize }}</div>
+                {% endif %}
+
+                {% if match.created_by %}
+                    <div class="info"><strong>Posted By:</strong> {{ match.created_by.username }}</div>
+                {% endif %}
+
+                {% if match.contact_number %}
+                    <div class="contact">📞 {{ match.contact_number }}</div>
+                {% endif %}
+
+                {% if match.chat_link %}
+                    <a href="{% url 'join_group' match.id %}" class="chat-btn">Join Group Chat</a>
+                {% endif %}
+            </div>
+
+            <!-- RIGHT SIDE IMAGE -->
+            <div class="right">
+                {% if match.match_image %}
+                    <img src="{{ match.match_image.url }}" class="match-img">
+                {% else %}
+                    <img src="/mnt/data/Screenshot 2025-11-25 130532.png" class="match-img">
+                {% endif %}
+            </div>
+
+        </div>
+
+    {% empty %}
+        <p style="text-align:center; color:#666;">No matches available.</p>
+    {% endfor %}
+
+</div>
+</body>
+</html>

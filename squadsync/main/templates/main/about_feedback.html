@@ -1,0 +1,232 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About & Feedback</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f0f6ff;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 900px;
+            margin: 40px auto;
+            position: relative;
+        }
+
+        /* Page Title */
+        .page-title {
+            text-align: center;
+            font-size: 32px;
+            font-weight: bold;
+            color: #003b80;
+            margin-bottom: 25px;
+        }
+
+        /* About Card */
+        .about-box {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-left: 5px solid #003b80;
+            margin-bottom: 30px;
+        }
+
+        .about-box h2 {
+            color: #003b80;
+            margin-bottom: 12px;
+        }
+
+        .about-box p {
+            color: #444;
+            line-height: 1.6;
+        }
+
+        /* Feedback Form */
+        .feedback-box {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-left: 5px solid #0077ff;
+        }
+
+        .feedback-box h2 {
+            color: #003b80;
+            margin-bottom: 15px;
+        }
+
+        label {
+            font-size: 16px;
+            color: #003b80;
+            font-weight: bold;
+        }
+
+        textarea {
+            width: 100%;
+            height: 120px;
+            padding: 12px;
+            margin-top: 6px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            border: 1px solid #aac7ff;
+            outline: none;
+            background: #f7faff;
+        }
+
+        textarea:focus {
+            border-color: #003b80;
+        }
+
+        /* Star Rating */
+        .stars {
+            display: flex;
+            gap: 8px;
+            font-size: 30px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            color: #aac7ff;
+        }
+
+        .stars i:hover,
+        .stars i.active {
+            color: #ffb100;
+        }
+
+        button {
+            padding: 12px 20px;
+            background: #003b80;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #002b5c;
+        }
+
+        /* Comment Box */
+        .comment-box {
+            background: #f7faff;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 4px solid #003b80;
+        }
+
+        /* Home Icon Back Button */
+        .home-icon {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            font-size: 28px;
+            color: #003b80;
+            text-decoration: none;
+            background: white;
+            padding: 10px 12px;
+            border-radius: 50%;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: 0.3s;
+            z-index: 1000;
+        }
+
+        .home-icon:hover {
+            background: #003b80;
+            color: white;
+            transform: scale(1.1);
+        }
+        
+    </style>
+
+    <script>
+        // Star rating script
+        function activateStars(index) {
+            const stars = document.querySelectorAll(".stars i");
+            stars.forEach((star, i) => {
+                star.classList.toggle("active", i <= index);
+            });
+            document.getElementById("rating").value = index + 1;
+        }
+    </script>
+
+</head>
+
+<body>
+
+<!-- Home Icon Back Button -->
+<a href="{% url 'dashboard' %}" class="home-icon">
+    <i class="fa fa-home"></i>
+</a>
+
+<div class="container">
+
+    <h1 class="page-title">About & Feedback</h1>
+
+    <!-- About Section -->
+    <div class="about-box">
+        <h2>About Squad Sync</h2>
+        <p>
+            Squad Sync is a sports partner finder platform that helps players connect 
+            with teammates who share similar interests, skills, and availability. 
+            Whether you're searching for a badminton partner, finding cricket team members, 
+            or scheduling friendly matches — Squad Sync makes it simple and smooth.
+        </p>
+        <p>
+            Our goal is to help people discover new partners, improve their game, 
+            and build sporting connections with ease.
+        </p>
+    </div>
+
+    <!-- Feedback Section -->
+    <div class="feedback-box">
+        <h2>We value your feedback!</h2>
+
+        <label>Rate your experience:</label>
+        <div class="stars">
+            <i class="fa fa-star" onclick="activateStars(0)"></i>
+            <i class="fa fa-star" onclick="activateStars(1)"></i>
+            <i class="fa fa-star" onclick="activateStars(2)"></i>
+            <i class="fa fa-star" onclick="activateStars(3)"></i>
+            <i class="fa fa-star" onclick="activateStars(4)"></i>
+        </div>
+
+        <form method="POST" action="{% url 'save_feedback' %}">
+            {% csrf_token %}
+
+            <label>Your Rating:</label>
+            <input type="hidden" name="rating" id="rating">
+
+            <label>Your Suggestions:</label>
+            <textarea name="feedback" placeholder="Write your feedback here..." required></textarea>
+
+            <button type="submit">Submit Feedback</button>
+        </form>
+
+        <h2>Overall Rating: {{ avg_rating }} ⭐</h2>
+
+        {% for fb in feedback_list %}
+            <div class="comment-box">
+                <p><strong>{{ fb.user.username }}</strong> - {{ fb.rating }} ⭐</p>
+                <p>{{ fb.feedback }}</p>
+                <small>{{ fb.created_at }}</small>
+            </div>
+        {% endfor %}
+
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Schedule a Match</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f6ff;
+            padding: 40px;
+        }
+
+        /* --- HOME ICON STYLE --- */
+        .home-icon {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            font-size: 30px;
+            color: #004aad; /* blue */
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .home-icon:hover {
+            color: #003c8f;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            color: #003c8f;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 12px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #aaa;
+            border-radius: 5px;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 10px;
+            width: 100%;
+            background: #004aad;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #003c8f;
+        }
+    </style>
+
+    <!-- Font Awesome for Home Icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+</head>
+
+<body>
+
+<!-- 🔵 HOME ICON (Top Left) -->
+<a href="{% url 'dashboard' %}" class="home-icon">
+    <i class="fas fa-home"></i>
+</a>
+
+
+<div class="container">
+
+    <h2>Schedule a Match</h2>
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <label>Sport:</label>
+        <input type="text" name="sport" placeholder="Enter sport name" required>
+
+        <label>Description:</label>
+        <textarea name="description" rows="4" style="width:100%; padding:8px; border:1px solid #aaa; border-radius:5px;" placeholder="Describe your match details... (Sport, rules, special notes, etc.)" required></textarea>
+
+        <label>Match title:</label>
+        <input type="text" name="title" />
+
+        <label>Date:</label>
+        <input type="date" name="date" />
+
+        <label>Time:</label>
+        <input type="time" name="time" />
+
+        <label>Location:</label>
+        <input type="text" name="location" />
+
+        <label>Players needed:</label>
+        <input type="number" name="players_needed" />
+
+        <label>Cash prize:</label>
+        <input type="number" name="cash_prize" />
+
+        <label>Chat Link:</label>
+        <input type="url" name="chat_link" placeholder="https://chat.whatsapp.com/XYZ..." >
+
+        <label>Contact Number:</label>
+        <input type="text" name="contact_number" required>
+
+        <label>Match Image:</label>
+        <input type="file" name="match_image" accept="image/*">
+
+        <button type="submit">Submit</button>
+    </form>
+
+</div>
+
+</body>
+</html>

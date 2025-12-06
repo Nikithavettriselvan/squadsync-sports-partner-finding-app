@@ -1,0 +1,120 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            background: url("{% static 'images/login_backgroundd.jpg' %}") 
+                        no-repeat center center/cover;
+
+            position: relative;
+        }
+
+        /* Soft dark overlay */
+        body::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.35);
+        }
+
+        .login-box {
+            position: relative;
+            z-index: 2;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 30px 40px;
+            border-radius: 15px;
+
+            /* Removed BLUR, added premium glass effect */
+            backdrop-filter: saturate(180%);
+
+            color: #fff;
+            width: 330px;
+            box-shadow: 0 0 25px rgba(0,0,0,0.4);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 25px;
+            font-family: Arial, sans-serif;
+            letter-spacing: 1px;
+        }
+
+        label {
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-top: 6px;
+            margin-bottom: 18px;
+            border-radius: 25px;
+            border: none;
+            outline: none;
+            background: rgba(255, 255, 255, 0.25);
+            color: #fff;
+        }
+
+        input::placeholder {
+            color: #eee;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #0077ff;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        button:hover {
+            background: #005fd1;
+        }
+
+        p {
+            margin-top: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-box">
+        <h1>Login</h1>
+
+        <form method="POST" action="{% url 'login_view' %}" autocomplete="off">
+            {% csrf_token %}
+
+            <label>Email:</label>
+            <input type="email" name="email" placeholder="Enter your email" required>
+
+            <label>Password:</label>
+            <input type="password" name="password" placeholder="Enter password" required>
+
+            <button type="submit">Login</button>
+
+            {% if error %}
+                <p style="color: rgb(255, 110, 110);">{{ error }}</p>
+            {% endif %}
+        </form>
+    </div>
+
+</body>
+</html>

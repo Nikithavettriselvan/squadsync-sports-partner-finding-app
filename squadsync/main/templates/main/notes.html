@@ -1,0 +1,298 @@
+<!-- templates/main/notes.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>My Notes</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root{
+            --page-bg: #f6f8fb;
+            --card-shadow: 0 8px 22px rgba(14,30,37,0.08);
+            --accent: #0b63e6;
+        }
+
+        body{
+            margin:0;
+            font-family: 'Poppins', Arial, sans-serif;
+            background: var(--page-bg);
+            color: #123;
+        }
+
+        /* HOME ICON */
+        .home-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            font-size: 30px;
+            color: var(--accent);
+            background: white;
+            border-radius: 50%;
+            padding: 10px 12px;
+            box-shadow: var(--card-shadow);
+            text-decoration: none;
+            transition: 0.25s;
+            z-index: 999;
+        }
+        .home-btn:hover {
+            transform: scale(1.1);
+            color: #004cb8;
+        }
+
+        .container{
+            width:90%;
+            max-width:1100px;
+            margin:70px auto 40px auto;
+        }
+
+        header.top {
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            margin-bottom:18px;
+        }
+
+        header.top h1 {
+            color: #0b3a82;
+            margin:0;
+            font-size:28px;
+            letter-spacing:0.2px;
+        }
+
+        /* form */
+        .note-form {
+            background: white;
+            border-radius:12px;
+            padding:18px;
+            box-shadow: var(--card-shadow);
+            display:flex;
+            gap:12px;
+            align-items:flex-start;
+            margin-bottom:22px;
+            flex-wrap:wrap;
+        }
+
+        .note-form .col {
+            flex:1;
+            min-width:180px;
+        }
+
+        .note-form input[type="text"],
+        .note-form input[type="date"],
+        .note-form textarea {
+            width:100%;
+            padding:10px 12px;
+            border-radius:8px;
+            border:1px solid #e2eaf8;
+            outline:none;
+            font-size:14px;
+            background: #fbfdff;
+        }
+
+        .note-form textarea {
+            resize:vertical;
+            min-height:84px;
+        }
+
+        .note-form .actions {
+            min-width:140px;
+            display:flex;
+            gap:10px;
+            align-items:center;
+            justify-content:flex-end;
+        }
+
+        .btn {
+            background:var(--accent);
+            color:white;
+            padding:10px 14px;
+            border-radius:10px;
+            border:none;
+            cursor:pointer;
+            font-weight:600;
+        }
+        .btn.secondary {
+            background:transparent;
+            color:var(--accent);
+            border:1px solid #dbe9ff;
+        }
+
+        /* notes grid */
+        .grid {
+            display:grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap:22px;
+        }
+
+        .note-card {
+            min-height:180px;
+            padding:18px;
+            border-radius:10px;
+            box-shadow: var(--card-shadow);
+            position:relative;
+            transform-origin:center;
+            overflow:hidden;
+            transition:transform .18s;
+        }
+        .note-card:hover{ transform: translateY(-6px) rotate(var(--hover-rot, 0deg)); }
+
+        .note-title {
+            font-weight:700;
+            margin:0 0 6px 0;
+            color:#123;
+        }
+        .note-meta {
+            font-size:13px;
+            color:#123a66;
+            margin-bottom:10px;
+            display:flex;
+            gap:10px;
+            align-items:center;
+        }
+
+        .note-desc {
+            white-space:pre-wrap;
+            font-size:14px;
+            color: #052336;
+        }
+
+        /* delete small button */
+        .small-del {
+            position:absolute;
+            top:10px;
+            right:10px;
+            background:rgba(255,255,255,0.55);
+            border-radius:6px;
+            padding:6px 7px;
+            border: none;
+            cursor:pointer;
+            font-size:13px;
+        }
+
+        /* sticky note strip */
+        .note-card::before {
+            content: "";
+            width: 46px;
+            height: 16px;
+            background: rgba(255,255,255,0.55);
+            position:absolute;
+            top:18px;
+            left:-12px;
+            transform: rotate(-18deg);
+            border-radius:3px;
+            opacity:0.8;
+        }
+
+        .empty-msg {
+            text-align:center;
+            padding:40px;
+            color:#6b7280;
+            background:white;
+            border-radius:12px;
+            box-shadow:var(--card-shadow);
+        }
+
+        @media (max-width:560px){
+            .note-form { padding:12px; gap:8px;}
+            header.top h1 { font-size:20px; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HOME BUTTON -->
+    <a href="{% url 'dashboard' %}" class="home-btn">
+        <i class="fa-solid fa-house"></i>
+    </a>
+
+    <div class="container">
+
+        <header class="top">
+            <h1><i class="fa-solid fa-sticky-note" style="color:var(--accent); margin-right:10px"></i>My Match Notes</h1>
+        </header>
+
+        {% if messages %}
+        <div style="margin-bottom:12px;">
+            {% for message in messages %}
+                <div style="background:#e6f4ff; padding:8px 12px; border-radius:8px; color:#0b3a82; margin-bottom:6px;">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- form -->
+        <form method="post" class="note-form">
+            {% csrf_token %}
+            <div class="col">
+                {{ form.match_name }}
+            </div>
+
+            <div class="col">
+                {{ form.sport }}
+            </div>
+
+            <div style="min-width:150px;">
+                {{ form.date }}
+            </div>
+
+            <div style="flex-basis:100%;">
+                {{ form.description }}
+            </div>
+
+            <div class="actions" style="flex-basis:100%; justify-content:flex-end;">
+                <button type="submit" class="btn">Add Note</button>
+            </div>
+        </form>
+
+        <!-- grid of notes -->
+        {% if notes %}
+        <div class="grid" id="notesGrid">
+            {% for note in notes %}
+            <div class="note-card" style="background: {{ note.color }}; --hover-rot: {{ forloop.counter|add:1 }}deg;">
+                <form method="post" action="{% url 'delete_note' note.pk %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button title="Delete note" class="small-del" onclick="return confirm('Delete this note?');">
+                        <i class="fa-solid fa-trash" style="color:#9b1b1b;"></i>
+                    </button>
+                </form>
+
+                <h3 class="note-title">{{ note.match_name }}</h3>
+
+                <div class="note-meta">
+                    <span><i class="fa-solid fa-basketball-ball"></i>&nbsp;{{ note.sport }}</span>
+                    <span style="opacity:0.85;">&bull;</span>
+                    <span>{{ note.date }}</span>
+                </div>
+
+                <div class="note-desc">
+                    {{ note.description|linebreaksbr }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-msg">You don't have any notes yet. Add your first match note above.</div>
+        {% endif %}
+
+    </div>
+
+    <script>
+        (function(){
+            const cards = document.querySelectorAll('.note-card');
+            cards.forEach((c, idx) => {
+                const r = (Math.random() * 8 - 4).toFixed(2);
+                c.style.transform = `rotate(${r}deg)`;
+                c.style.transition = 'transform .18s';
+                c.addEventListener('mouseenter', () => c.style.transform = 'translateY(-6px) rotate(0deg)');
+                c.addEventListener('mouseleave', () => c.style.transform = `rotate(${r}deg)`);
+            });
+        })();
+    </script>
+
+</body>
+</html>

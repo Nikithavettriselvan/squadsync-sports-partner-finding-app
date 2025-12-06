@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #f0f6ff; 
+        }
+
+        /* Dashboard Title */
+        .dash-title {
+            text-align: center;
+            color: #003b80;
+            margin-top: 20px;
+            font-size: 32px;
+            letter-spacing: 1px;
+            font-weight: bold;
+        }
+
+        /* Stylish User Details Card */
+        .user-card {
+            width: 90%;
+            max-width: 450px;
+            margin: 15px auto 30px auto;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            background-color: white;
+            padding: 18px 20px;
+            border-radius: 15px;
+            box-shadow: 0px 5px 12px rgba(0, 0, 0, 0.12);
+            border-left: 5px solid #003b80;
+        }
+
+        .user-left i {
+            font-size: 52px;
+            color: #003b80;
+        }
+
+        .welcome-text {
+            color: #666;
+            margin: 0;
+            font-size: 15px;
+        }
+
+        .username {
+            margin: 0;
+            color: #003b80;
+            font-size: 26px;
+            font-weight: bold;
+            text-transform: capitalize;
+        }
+
+        @media (max-width: 480px) {
+            .user-card {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        /* Top navigation */
+        .top-nav {
+            width: 100%;
+            padding: 15px;
+            display: flex;
+            justify-content: flex-end;
+            box-sizing: border-box;
+        }
+
+        .right-icons {
+            display: flex;
+            gap: 20px;
+        }
+
+        .icon-btn {
+            font-size: 22px;
+            color: #003b80;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+
+        .icon-btn:hover {
+            color: #001f4d;
+            transform: scale(1.1);
+        }
+
+        /* Dashboard grid */
+        .grid-container {
+            width: 90%;
+            margin: 40px auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+        }
+
+        .grid-box {
+            background-color: white;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .grid-box:hover {
+            background-color: #e3f0ff;
+            transform: translateY(-5px);
+        }
+
+        .grid-box i {
+            font-size: 40px;
+            color: #003b80;
+            margin-bottom: 12px;
+        }
+
+        .grid-box h3 {
+            font-size: 20px;
+            color: #003b80;
+            margin-top: 10px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .grid-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .grid-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- Title -->
+<h1 class="dash-title">Dashboard</h1>
+
+<!-- Stylish User Card -->
+<div class="user-card">
+    <div class="user-left">
+        <i class="fa fa-user-circle"></i>
+    </div>
+
+    <div class="user-right">
+        <p class="welcome-text">Welcome back,</p>
+        <h2 class="username">{{ request.user.username }}</h2>
+    </div>
+</div>
+
+<!-- Top Nav -->
+<nav class="top-nav">
+    <div class="right-icons">
+        <a href="{% url 'profile_view' %}" class="icon-btn" title="Profile">
+            <i class="fa fa-user"></i>
+        </a>
+
+        <a href="{% url 'logout_view' %}" class="icon-btn" title="Logout">
+            <i class="fa fa-sign-out"></i>
+        </a>
+    </div>
+</nav>
+
+<!-- Dashboard Grid -->
+<div class="grid-container">
+
+    <div class="grid-box">
+        <i class="fa fa-users"></i>
+        <a href="{% url 'available_matches' %}">
+            <h3>Available Matches</h3>
+        </a>
+    </div>
+
+    <div class="grid-box">
+        <i class="fa fa-search"></i>
+        <a href="{% url 'search_users' %}">
+            <h3>Search</h3>
+        </a>
+    </div>
+
+    <div class="grid-box">
+        <i class="fa fa-comments"></i>
+        <a href="{% url 'notes' %}">
+        <h3>Notes</h3>
+    </a>
+    </div>
+
+    <div class="grid-box">
+        <i class="fa fa-list"></i>
+        <a href="{% url 'all_matches' %}">
+            <h3>All Matches</h3>
+        </a>
+    </div>
+
+    <div class="grid-box">
+        <i class="fa fa-info-circle"></i>
+        <a href="{% url 'about_feedback' %}">
+            <h3>About & Feedback</h3>
+        </a>
+    </div>
+
+    <div class="grid-box">
+        <i class="fa fa-calendar"></i>
+        <a href="{% url 'schedule_match' %}">
+            <h3>Schedule Matches</h3>
+        </a>
+    </div>
+
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,479 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Squad Sync – Find Your Co-Players</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- MAIN CSS -->
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f5f5f5;
+        }
+
+        /* NAVBAR */
+        .navbar {
+            background: #0a0a0a;
+            color: blue;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            font-weight: 500;
+        }
+        .navbar a:hover {
+            color: #ffcc00;
+        }
+
+        /* HERO SECTION */
+        .hero {
+            position: relative;
+            height: 70vh;
+            background: url("{% static 'images/home1.jpg' %}") no-repeat center/cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+        }
+        .hero-overlay {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.55);
+            top: 0;
+            left: 0;
+        }
+        .hero-content {
+            z-index: 2;
+            max-width: 700px;
+        }
+        .hero-content h1 {
+            font-size: 48px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        .hero-content p {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        /* BUTTONS */
+        .btn {
+            padding: 12px 25px;
+            border-radius: 4px;
+            font-size: 16px;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .btn-primary {
+            background: #ffcc00;
+            color: black;
+        }
+        .btn-primary:hover {
+            background: #e6b800;
+        }
+        .btn-outline {
+            border: 2px solid white;
+            color: white;
+            margin-left: 10px;
+        }
+        .btn-outline:hover {
+            background: white;
+            color: black;
+        }
+
+        /* FEATURES AUTO SCROLL */
+        .features-section {
+            width: 100%;
+            padding: 40px 0;
+            text-align: center;
+        }
+        .features-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 25px;
+        }
+        .slider {
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+        .slider-track {
+            display: flex;
+            width: calc(260px * 14);
+            animation: scroll 30s linear infinite;
+        }
+        .feature-card {
+            width: 260px;
+            min-width: 260px;
+            height: 260px;
+            background: white;
+            margin: 0 15px;
+            border-radius: 12px;
+            padding: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.10);
+            text-align: center;
+        }
+        .feature-card img {
+            width: 100%;
+            height: 130px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+        .feature-card h3 {
+            margin: 10px 0 5px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        .feature-card p {
+            font-size: 14px;
+            color: #555;
+        }
+
+        /* Auto-scroll animation */
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* GAMES HEADING */
+        .games-main-heading {
+            width: 100%;
+            text-align: center;
+            padding: 40px 0 20px;
+            font-size: 32px;
+            font-weight: 800;
+            color: #0a3d62;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* MINI GAME 1 */
+        .mini-game-section {
+            width: 100%;
+            padding: 40px 0;
+            background: linear-gradient(to right, #c9eaff, #e8f6ff);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .game-container {
+            width: 350px;
+            height: 220px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        .ball {
+            width: 50px;
+            height: 50px;
+            background: orange;
+            border-radius: 50%;
+            position: absolute;
+            cursor: pointer;
+            animation: moveBall 2s linear infinite;
+        }
+        @keyframes moveBall {
+            0% { left: 0; }
+            50% { left: 300px; }
+            100% { left: 0; }
+        }
+        .score {
+            margin-top: 12px;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        /* EMOJI POP GAME */
+        #emojiZone {
+            width: 100%;
+            height: 220px;
+            background: #fff7cc;
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+            margin-top: 40px;
+        }
+        .emoji {
+            font-size: 40px;
+            position: absolute;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        #emojiScore {
+            margin-top: 12px;
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        /* REACTION GAME */
+        .reaction-section {
+            width: 100%;
+            padding: 40px 0;
+            background: #fff6e8;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .reaction-box {
+            width: 320px;
+            height: 200px;
+            border-radius: 15px;
+            background: red;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            font-size: 22px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .reaction-score {
+            margin-top: 15px;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        /* FOOTER */
+        footer {
+            width: 100%;
+            background: #111;
+            color: #fff;
+            padding: 25px 0;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+        footer .names {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        footer p {
+            margin-top: 5px;
+            font-size: 14px;
+            opacity: 0.7;
+        }
+    </style>
+
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <div class="navbar">
+        <h2>Squad Sync</h2>
+        <div>
+            <a href="{% url 'login_view' %}">Login</a>
+            <a href="{% url 'register' %}" class="btn-primary" style="padding:8px 15px;">Register</a>
+        </div>
+    </div>
+
+    <!-- HERO -->
+    <div class="hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1>Find Players • Join Teams • Play Together</h1>
+            <p>Your all-in-one platform to find co-players, host matches, and build winning squads.</p>
+
+            <a href="{% url 'register' %}" class="btn btn-primary">Get Started</a>
+            <a href="{% url 'login_view' %}" class="btn btn-outline">Login</a>
+        </div>
+    </div>
+
+    <!-- FEATURES AUTO-SCROLL -->
+    <section class="features-section">
+    <h2 class="features-title">Explore SquadSync Features</h2>
+
+    <div class="slider">
+        <div class="slider-track">
+
+            <!-- ORIGINAL ITEMS -->
+            <div class="feature-card">
+                <img src="{% static 'images/search_players.jpg' %}">
+                <h3>Search Players</h3>
+                <p>Find co-players by sport, skill level, and location.</p>
+            </div>
+
+            <div class="feature-card">
+                <img src="{% static 'images/schedule_matches.avif' %}">
+                <h3>Schedule Matches</h3>
+                <p>Create a match with date, time, sport & venue.</p>
+            </div>
+
+            <div class="feature-card">
+                <img src="{% static 'images/available_matches.jpg' %}">
+                <h3>Available Matches</h3>
+                <p>Browse all active public matches and join instantly.</p>
+            </div>
+
+            <div class="feature-card">
+                <img src="{% static 'images/chat_group.png' %}">
+                <h3>Match Chat Rooms</h3>
+                <p>Join WhatsApp/Telegram groups for match coordination.</p>
+            </div>
+
+            <div class="feature-card">
+                <img src="{% static 'images/profile.webp' %}">
+                <h3>User Profiles</h3>
+                <p>View player photos, skill level, location & experience.</p>
+            </div>
+
+            <div class="feature-card">
+                <img src="{% static 'images/history.webp' %}">
+                <h3>Match History</h3>
+                <p>Track your past and upcoming matches easily.</p>
+            </div>
+
+            <div class="feature-card">
+                <img src="{% static 'images/Feedback.webp' %}">
+                <h3>Feedback</h3>
+                <p>Share your thoughts to help improve the platform.</p>
+            </div>
+
+            <div class="feature-card">
+                <img src="{% static 'images/About.jpg' %}">
+                <h3>About SquadSync</h3>
+                <p>Learn how we help players connect & compete.</p>
+            </div>
+
+            <!-- DUPLICATES FOR INFINITE LOOP -->
+            <div class="feature-card">
+                <img src="{% static 'images/search_players.jpg' %}">
+                <h3>Search Players</h3>
+                <p>Find co-players by sport, skill level, and location.</p>
+            </div>
+
+            <div class="feature-card">
+                <img src="images\schedule_matches.avif">
+                <h3>Schedule Matches</h3>
+                <p>Create a match with date, time, sport & venue.</p>
+            </div>
+
+            <div class="feature-card">
+                <img src="images/available_matches.jpg">
+                <h3>Available Matches</h3>
+                <p>Browse all active public matches and join instantly.</p>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+    <!-- GAMES -->
+    <h1 class="games-main-heading">Try The Games</h1>
+
+    <!-- MINI GAME 1 -->
+    <div class="mini-game-section">
+        <h2>Mini Game: Catch the Ball!</h2>
+
+        <div class="game-container">
+            <div class="ball" onclick="increaseScore()"></div>
+        </div>
+
+        <div class="score">
+            Score: <span id="scoreValue">0</span>
+        </div>
+    </div>
+
+    <script>
+        let score = 0;
+        function increaseScore() {
+            score++;
+            document.getElementById("scoreValue").innerText = score;
+        }
+    </script>
+
+    <!-- EMOJI GAME -->
+    <h2 style="text-align:center;">EMOJI POP</h2>
+
+    <div id="emojiZone"></div>
+    <div id="emojiScore">Score: 0</div>
+
+    <script>
+        let emojiScore = 0;
+        let emojis = ["😀", "😍", "🔥", "⚽", "🏆", "😎"];
+
+        function createEmoji() {
+            let zone = document.getElementById("emojiZone");
+            let em = document.createElement("div");
+
+            em.classList.add("emoji");
+            em.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
+
+            let maxX = zone.clientWidth - 50;
+            let maxY = zone.clientHeight - 50;
+
+            em.style.left = Math.random() * maxX + "px";
+            em.style.top = Math.random() * maxY + "px";
+
+            em.onclick = () => {
+                emojiScore++;
+                document.getElementById("emojiScore").innerText = "Score: " + emojiScore;
+                em.remove();
+            };
+
+            zone.appendChild(em);
+
+            setTimeout(() => em.remove(), 1500);
+        }
+
+        setInterval(createEmoji, 900);
+    </script>
+
+    <!-- REACTION GAME -->
+    <div class="reaction-section">
+        <h2>Reaction Color Burst</h2>
+
+        <div class="reaction-box" id="colorBox" onclick="checkColor()">
+            Tap Green Color!
+        </div>
+
+        <div class="reaction-score">
+            Score: <span id="rScore">0</span>
+        </div>
+    </div>
+
+    <script>
+        let rScore = 0;
+        let currentColor = "red";
+
+        function changeColor() {
+            const colors = ["red", "blue", "yellow", "green", "purple"];
+            currentColor = colors[Math.floor(Math.random() * colors.length)];
+            document.getElementById("colorBox").style.background = currentColor;
+        }
+
+        function checkColor() {
+            if (currentColor === "green") {
+                rScore++;
+                document.getElementById("rScore").innerText = rScore;
+            }
+        }
+
+        setInterval(changeColor, 800);
+    </script>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="names">Nikitha • Pavithra • Sri Harini</div>
+        <p>© 2025 Squad Sync – All Rights Reserved</p>
+    </footer>
+
+</body>
+</html>

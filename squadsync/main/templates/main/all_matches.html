@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>All Matches</title>
+
+    <!-- Font Awesome for Home Icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body { 
+            background: #f5f7fa; 
+            font-family: Arial, sans-serif; 
+            margin: 0;
+            padding: 0;
+        }
+
+        /* HOME ICON */
+        .home-btn {
+            position: absolute;
+            top: 20px;
+            left: 25px;
+            font-size: 32px;
+            color: #0066cc;
+            text-decoration: none;
+            transition: 0.3s ease;
+        }
+        .home-btn:hover {
+            color: #004999;
+            transform: scale(1.1);
+        }
+
+        /* HEADER */
+        .header {
+            color: blue;
+            padding: 16px;
+            font-size: 28px;
+            text-align: center;
+        }
+
+        /* SUMMARY CARDS */
+        .summary {
+            width: 95%;
+            margin: 20px auto;
+            display: flex;
+            gap: 20px;
+        }
+        .summary div {
+            flex: 1;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .total-matches { background: #f0f0f0; }
+        .total-wins { background: #e6ffe6; }
+        .total-loss { background: #ffe6e6; }
+        .total-draw { background: #fff7cc; }
+        .summary h3 { margin: 0 0 8px 0; }
+        .summary p { font-size: 22px; font-weight: bold; margin: 0; }
+
+        /* MATCHES TABLE */
+        table {
+            width: 95%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        th, td {
+            padding: 14px;
+            border-bottom: 1px solid #eee;
+        }
+        th { background: #dceeff; text-align: left; }
+
+        select {
+            padding: 6px 10px;
+            border-radius: 6px;
+            border: 1px solid #aaa;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HOME ICON -->
+    <a href="{% url 'dashboard' %}" class="home-btn">
+        <i class="fa-solid fa-house"></i>
+    </a>
+
+    <!-- HEADER -->
+    <div class="header">
+        All Matches
+    </div>
+
+    <!-- SUMMARY SECTION -->
+    <div class="summary">
+        <div class="total-matches">
+            <h3>Total Matches</h3>
+            <p>{{ matches.count }}</p>
+        </div>
+        <div class="total-wins">
+            <h3>Total Wins</h3>
+            <p>{{ win_count }}</p>
+        </div>
+        <div class="total-loss">
+            <h3>Total Loss</h3>
+            <p>{{ loss_count }}</p>
+        </div>
+        <div class="total-draw">
+            <h3>Total Draw</h3>
+            <p>{{ draw_count }}</p>
+        </div>
+    </div>
+
+    <!-- MATCHES TABLE -->
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Location</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Status</th>
+            <th>Result</th>
+        </tr>
+
+        {% for match in matches %}
+        <tr>
+            <td>{{ match.title }}</td>
+            <td>{{ match.location }}</td>
+            <td>{{ match.date }}</td>
+            <td>{{ match.time }}</td>
+
+            <td>
+                <form action="{% url 'update_status_result' match.id %}" method="POST">
+                    {% csrf_token %}
+                    <select name="status" onchange="this.form.submit()">
+                        <option value="upcoming" {% if match.status == 'upcoming' %}selected{% endif %}>Upcoming</option>
+                        <option value="completed" {% if match.status == 'completed' %}selected{% endif %}>Completed</option>
+                    </select>
+                </form>
+            </td>
+
+            <td>
+                <form action="{% url 'update_status_result' match.id %}" method="POST">
+                    {% csrf_token %}
+                    <select name="result" onchange="this.form.submit()">
+                        <option value="none" {% if match.result == 'none' %}selected{% endif %}>None</option>
+                        <option value="win" {% if match.result == 'win' %}selected{% endif %}>Win</option>
+                        <option value="loss" {% if match.result == 'loss' %}selected{% endif %}>Loss</option>
+                        <option value="draw" {% if match.result == 'draw' %}selected{% endif %}>Draw</option>
+                    </select>
+                </form>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="6" style="text-align:center; padding:20px; color:#777;">
+                No matches found.
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+</body>
+</html>

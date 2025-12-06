@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile</title>
+
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(to bottom right, #e9f1ff, #f6f9ff);
+            margin: 0;
+            padding: 40px 0;
+        }
+
+        .container {
+            max-width: 450px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 18px;
+            box-shadow: 0px 8px 25px rgba(0,0,0,0.15);
+            border-top: 6px solid #007bff;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 10px;
+            color: #003d80;
+        }
+
+        /* Insta-style profile picture */
+        .profile-pic-container {
+            width: 130px;
+            height: 130px;
+            margin: 10px auto 20px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 4px solid #007bff;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .profile-pic-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .change-text {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.45);
+            color: white;
+            text-align: center;
+            padding: 5px 0;
+            font-size: 13px;
+            opacity: 0;
+            transition: 0.3s;
+        }
+
+        .profile-pic-container:hover .change-text {
+            opacity: 1;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            font-weight: 600;
+            color: #004a99;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #bfd8ff;
+            border-radius: 8px;
+            background: #f0f6ff;
+        }
+
+        button {
+            width: 100%;
+            background: #007bff;
+            border: none;
+            padding: 12px;
+            color: white;
+            font-size: 16px;
+            border-radius: 8px;
+            margin-top: 15px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        .back-btn {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .back-btn a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        /* ----- Extra Photos Section ----- */
+        .photo-grid {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        .photo-box {
+            width: 100px;
+            height: 100px;
+            position: relative;
+        }
+
+        .photo-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        .delete-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(255,0,0,0.8);
+            color: white;
+            padding: 3px 7px;
+            border-radius: 5px;
+            font-size: 12px;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2>Edit Profile</h2>
+
+    <!-- Insta-style clickable profile picture -->
+    <div class="profile-pic-container" onclick="document.getElementById('profilePicInput').click()">
+        {% if profile.profile_picture %}
+            <img id="previewImage" src="{{ profile.profile_picture.url }}">
+        {% else %}
+            <img id="previewImage" src="https://cdn-icons-png.flaticon.com/512/847/847969.png">
+        {% endif %}
+        <div class="change-text">Change</div>
+    </div>
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <input type="file" id="profilePicInput" name="profile_picture" style="display:none;" onchange="previewProfilePic(event)">
+
+        <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" name="full_name" value="{{ profile.full_name }}" required>
+        </div>
+
+        <div class="form-group">
+            <label>Location</label>
+            <input type="text" name="location" value="{{ profile.location }}" required>
+        </div>
+
+        <div class="form-group">
+            <label>Date of Birth</label>
+            <input type="date" name="dob" value="{{ profile.dob|date:'Y-m-d' }}">
+        </div>
+
+        <div class="form-group">
+            <label>Interested Sport</label>
+            <input type="text" name="interested_sport" value="{{ profile.interested_sport }}" required>
+        </div>
+
+        <div class="form-group">
+            <label>Experience Level</label>
+            <select name="experience_level">
+                <option value="Beginner" {% if profile.experience_level == "Beginner" %}selected{% endif %}>Beginner</option>
+                <option value="Intermediate" {% if profile.experience_level == "Intermediate" %}selected{% endif %}>Intermediate</option>
+                <option value="Advanced" {% if profile.experience_level == "Advanced" %}selected{% endif %}>Advanced</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Upload More Photos</label>
+            <input type="file" name="extra_photos" multiple>
+        </div>
+
+        <!-- SHOW EXTRA PHOTOS + DELETE -->
+        <h4>Your Photos</h4>
+        <div class="photo-grid">
+            {% for p in profile.extra_photos.all %}
+                <div class="photo-box">
+                    <img src="{{ p.image.url }}">
+                    <a class="delete-btn" href="{% url 'delete_photo' p.id %}" onclick="return confirm('Delete this photo?');">X</a>
+                </div>
+            {% endfor %}
+        </div>
+
+        <button type="submit">Save Changes</button>
+    </form>
+
+    <div class="back-btn">
+        <a href="{% url 'profile_view' %}">Back to Profile</a>
+    </div>
+</div>
+
+<script>
+function previewProfilePic(event) {
+    const img = document.getElementById('previewImage');
+    img.src = URL.createObjectURL(event.target.files[0]);
+}
+</script>
+
+</body>
+</html>
